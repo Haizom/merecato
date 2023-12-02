@@ -1,4 +1,4 @@
-# Nodejs/expressjs/mongodb Server for Rwwa magazine
+# Nodejs/expressjs/mongodb Server for merecato app
 
 # Environment vars
 This project uses the following environment variables:
