@@ -52,3 +52,6 @@ The folder structure of this app is explained below:
 
 
 # API endpoints
+- api/users
+- api/categories
+- api/products
