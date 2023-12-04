@@ -20,6 +20,11 @@ app.use(express.static("storage"));
 
 app.use(logger);
 
+// Testing route
+app.get("/", (req, res) => {
+  res.send("Hello From Merecato");
+});
+
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
