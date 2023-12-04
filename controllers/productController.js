@@ -67,7 +67,7 @@ const getProductsByUserId = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: 'Invalid user ID!' });
   }
 
-  const products = await Product.find({ userId });
+  const products = await Product.find({ userId: userId });
   res.status(200).json(products);
 });
 
@@ -84,6 +84,7 @@ const getProductsByCategoryId = asyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+
 // Update product
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -94,9 +95,9 @@ const updateProduct = asyncHandler(async (req, res) => {
   const location = req.body.location ? req.body.location : oldProduct.location;
   const price = req.body.price ? req.body.price : oldProduct.price;
   const description = req.body.description ? req.body.description : oldProduct.description;
-  const files = req.file ? [req.file.filename] : oldProduct.files;
-
-  const userId = req.user._id;
+  const files = req.files.length > 0 ? req.files.map(file => file.filename) : oldProduct.files;
+  
+  const userId = req.user.id;
 
   const product = {
     name,
@@ -118,10 +119,11 @@ const updateProduct = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: 'No such product!' });
   }
 
-  if (req.file) {
-    unlinkfile(oldProduct.files[0]);
+  if (req.files.length > 0) {
+    for (let i = 0; i < req.files.length; i++) {
+      unlinkfile(oldProduct.files[i]);
+    }
   }
-
   res.status(200).json(updatedProduct);
 });
 
@@ -140,7 +142,11 @@ const deleteProduct = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: 'No such product!' });
   }
 
-  unlinkfile(deletedProduct.files[0]);
+  if (deletedProduct.files.length > 0) {
+    for (let i = 0; i < deletedProduct.files.length; i++) {
+      unlinkfile(deletedProduct.files[i]);
+    }
+  }
   res.status(200).json(deletedProduct);
 });
 

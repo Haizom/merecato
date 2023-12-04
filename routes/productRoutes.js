@@ -13,10 +13,9 @@ const productRoutes = express.Router();
 productRoutes.post('/', userAuth, upload.array('media', 5), createProduct);
 productRoutes.get('/', userAuth, getAllProducts);
 productRoutes.get('/:id', getProductById);
-
 productRoutes.get('/user/:userId', getProductsByUserId);
-// productRoutes.get('/category/:categoryId', getProductsByCategoryId); // better to be query not parameter -  to do later
-// productRoutes.patch('/:id', upload.single('file'), updateProduct);
-// productRoutes.delete('/:id', deleteProduct);
+productRoutes.get('/category/:categoryId', getProductsByCategoryId); // better to be query not parameter -  to do later
+productRoutes.patch('/:id', userAuth, upload.array('media', 5), updateProduct);
+productRoutes.delete('/:id', userAuth, deleteProduct);
 
 module.exports = productRoutes;
