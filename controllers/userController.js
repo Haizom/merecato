@@ -28,7 +28,7 @@ const login = asyncHandler(async (req, res) => {
 
 // Register
 const registerUser = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, phone, birthday, password } = req.body;
+    const { firstName, lastName, email, phone, location, birthday, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -42,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
         lastName,
         email,
         phone,
+        location,
         birthday,
         password: hashedPassword,
     });
@@ -59,8 +60,44 @@ const logout = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Logout successful' });
 });
 
+// Updating user and adding image
+const updateUserInfo = asyncHandler(async (req, res) => {
+    const { firstName, lastName, phone, location, birthday } = req.body;
+
+    const profileImage = req.file ? req.file.filename : null; 
+
+    const userId = req.user.id; 
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.firstName = firstName || user.firstName;
+        user.lastName = lastName || user.lastName;
+        user.phone = phone || user.phone;
+        user.location = location || user.location;
+        user.birthday = birthday || user.birthday;
+
+        if (profileImage) {
+            user.image = profileImage;
+        }
+
+        await user.save();
+
+        res.status(200).json({ message: 'User information updated successfully', user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
 module.exports = {
     registerUser,
     login,
-    logout
+    logout,
+    updateUserInfo
 };
