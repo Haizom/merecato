@@ -63,10 +63,12 @@ const logout = asyncHandler(async (req, res) => {
 // Updating user and adding image
 const updateUserInfo = asyncHandler(async (req, res) => {
     const { firstName, lastName, phone, location, birthday } = req.body;
+    // console.log(req.body)
 
     const profileImage = req.file ? req.file.filename : null; 
 
     const userId = req.user.id; 
+    // console.log(userId)
 
     try {
         const user = await User.findById(userId);
