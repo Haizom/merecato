@@ -3,11 +3,6 @@ const Product = require("../models/productModel");
 const mongoose = require("mongoose");
 const { unlinkfile } = require("../utils/unlinkFile");
 
-// Get all products
-// const getAllProducts = asyncHandler(async (req, res) => {
-//   const products = await Product.find().populate("category");
-//   res.status(200).json(products);
-// });
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
@@ -22,6 +17,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error fetching products" });
   }
 });
+
 
 // Create a product
 const createProduct = asyncHandler(async (req, res) => {
