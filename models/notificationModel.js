@@ -7,7 +7,7 @@ const notificationSchema = new Schema({
     ref: "User",
   },
   content: String,
-  read: {
+  isRead: {
     type: Boolean,
     default: false,
   },
