@@ -3,12 +3,10 @@ const Product = require("../models/productModel");
 const mongoose = require("mongoose");
 const { unlinkfile } = require("../utils/unlinkFile");
 
-
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    // Populate with the desired category fields (including "name")
     const products = await Product.find().populate({
-      path: "category"
+      path: "category",
     });
 
     res.status(200).json(products);
@@ -17,7 +15,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error fetching products" });
   }
 });
-
 
 // Create a product
 const createProduct = asyncHandler(async (req, res) => {
@@ -29,8 +26,10 @@ const createProduct = asyncHandler(async (req, res) => {
     });
   }
 
-  if (req.files.length === 1) {
-    return res.status(400).json({ message: "Files are required." });
+  if (req.files.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "Minimum of 1 Files are required." });
   }
 
   const files = req.files.map((file) => file.filename);
