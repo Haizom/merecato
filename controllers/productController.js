@@ -76,7 +76,9 @@ const getProductsByUserId = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Invalid user ID!" });
   }
 
-  const products = await Product.find({ userId: userId });
+  const products = await Product.find({ userId: userId }).populate({
+    path: "category",
+  });
   res.status(200).json(products);
 });
 
@@ -88,7 +90,9 @@ const getProductsByCategoryId = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Invalid category ID!" });
   }
 
-  const products = await Product.find({ category: categoryId });
+  const products = await Product.find({ category: categoryId }).populate({
+    path: "user",
+  });;
   res.status(200).json(products);
 });
 
