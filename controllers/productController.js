@@ -92,7 +92,7 @@ const getProductsByCategoryId = asyncHandler(async (req, res) => {
 
   const products = await Product.find({ category: categoryId }).populate({
     path: "user",
-  });;
+  });
   res.status(200).json(products);
 });
 
