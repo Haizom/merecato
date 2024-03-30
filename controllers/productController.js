@@ -5,9 +5,13 @@ const { unlinkfile } = require("../utils/unlinkFile");
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().populate({
-      path: "category",
-    });
+    const products = await Product.find()
+      .populate({
+        path: "category",
+      })
+      .populate({
+        path: "userId",
+      });
 
     res.status(200).json(products);
   } catch (error) {
@@ -59,7 +63,13 @@ const getProductById = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "No such product!" });
   }
 
-  const product = await Product.findById(id);
+  const product = await Product.findById(id)
+    .populate({
+      path: "category",
+    })
+    .populate({
+      path: "userId",
+    });
 
   if (!product) {
     return res.status(404).json({ error: "No such product!" });
@@ -76,9 +86,13 @@ const getProductsByUserId = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Invalid user ID!" });
   }
 
-  const products = await Product.find({ userId: userId }).populate({
-    path: "category",
-  });
+  const products = await Product.find({ userId: userId })
+    .populate({
+      path: "category",
+    })
+    .populate({
+      path: "user",
+    });
   res.status(200).json(products);
 });
 
@@ -90,9 +104,13 @@ const getProductsByCategoryId = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Invalid category ID!" });
   }
 
-  const products = await Product.find({ category: categoryId }).populate({
-    path: "user",
-  });
+  const products = await Product.find({ category: categoryId })
+    .populate({
+      path: "category",
+    })
+    .populate({
+      path: "user",
+    });
   res.status(200).json(products);
 });
 
