@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { app, io, server } = require("./socket/socket")
+const { app, io, server } = require("./socket/socket");
 const env = require("dotenv").config();
 const colors = require("colors");
 const port = process.env.PORT || 5000;
@@ -14,7 +14,6 @@ resetMongos_id();
 const logger = require("./middleware/logger");
 
 // const app = express();
-
 
 app.use(cors());
 app.use(express.json());
@@ -33,8 +32,7 @@ app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/favorites", require("./routes/favoriteRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
-
-
+app.use("/api/conversations", require("./routes/conversationRoues"));
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
