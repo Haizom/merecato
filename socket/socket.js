@@ -1,8 +1,8 @@
 const http = require("http");
 const express = require("express");
 const { Server } = require("socket.io");
-const app = express();
 
+const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -13,7 +13,7 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected to socket`);
 
   // Listen for user ID and socket ID mapping
-  socket.on("setUserId", ({userId}) => {
+  socket.on("setUserId", ({ userId }) => {
     userSocketMap.set(userId, socket.id);
     console.log(`User ${userId} mapped to socket ${socket.id}`);
   });
@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Listen for sending notifications
   socket.on("sendNotification", ({ userId, content }) => {
     const receiverSocketId = userSocketMap.get(userId);
     if (receiverSocketId) {
