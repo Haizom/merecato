@@ -36,9 +36,10 @@ const createConversation = asyncHandler(async (req, res) => {
   });
 });
 
+
 // Get conversation by user IDs
 const getConversationByUserIds = asyncHandler(async (req, res) => {
-  const { user1_id, user2_id } = req.body;
+  const { user1_id, user2_id } = req.query;
 
   if (
     !mongoose.Types.ObjectId.isValid(user1_id) ||
@@ -61,7 +62,23 @@ const getConversationByUserIds = asyncHandler(async (req, res) => {
   res.status(200).json(conversation);
 });
 
+// Get user's conversations by user IDs
+const getUsersConversationsByUserId = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid user ID!" });
+  }
+
+  const conversations = await Conversation.find({
+    $or: [{ user1_id: userId }, { user2_id: userId }],
+  });
+
+  res.status(200).json(conversations);
+});
+
 module.exports = {
   createConversation,
   getConversationByUserIds,
+  getUsersConversationsByUserId,
 };

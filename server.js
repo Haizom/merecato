@@ -33,6 +33,7 @@ app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/favorites", require("./routes/favoriteRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoues"));
+app.use("/api/messages", require("./routes/messagesRoutes"));
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
