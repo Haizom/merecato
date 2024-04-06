@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
-const Message = require("../models/messageModel");
+const Message = require("../models/messagesModel");
 
 // Create a message
 const createMessage = asyncHandler(async (req, res) => {
