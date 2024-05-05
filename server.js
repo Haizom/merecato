@@ -34,6 +34,7 @@ app.use("/api/favorites", require("./routes/favoriteRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoues"));
 app.use("/api/messages", require("./routes/messagesRoutes"));
+app.use("/api/ratings", require("./routes/ratingRoutes"));
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
