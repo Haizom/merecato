@@ -36,7 +36,6 @@ const createConversation = asyncHandler(async (req, res) => {
   });
 });
 
-
 // Get conversation by user IDs
 const getConversationByUserIds = asyncHandler(async (req, res) => {
   const { user1_id, user2_id } = req.query;
@@ -72,7 +71,13 @@ const getUsersConversationsByUserId = asyncHandler(async (req, res) => {
 
   const conversations = await Conversation.find({
     $or: [{ user1_id: userId }, { user2_id: userId }],
-  });
+  })
+    .populate({
+      path: "user1_id",
+    })
+    .populate({
+      path: "user2_id",
+    });
 
   res.status(200).json(conversations);
 });
