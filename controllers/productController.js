@@ -91,7 +91,7 @@ const getProductsByUserId = asyncHandler(async (req, res) => {
       path: "category",
     })
     .populate({
-      path: "user",
+      path: "userId",
     });
   res.status(200).json(products);
 });
@@ -109,7 +109,7 @@ const getProductsByCategoryId = asyncHandler(async (req, res) => {
       path: "category",
     })
     .populate({
-      path: "user",
+      path: "userId",
     });
   res.status(200).json(products);
 });
