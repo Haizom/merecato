@@ -22,7 +22,7 @@ app.use(express.static("storage"));
 
 app.use(logger);
 
-// Testing route
+// Testing route and dep
 app.get("/", (req, res) => {
   res.send("Hello From Merecato");
 });
@@ -35,6 +35,7 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoues"));
 app.use("/api/messages", require("./routes/messagesRoutes"));
 app.use("/api/ratings", require("./routes/ratingRoutes"));
+app.use("/api/history", require("./routes/historyRoutes"));
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
