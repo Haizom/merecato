@@ -22,7 +22,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
 // Create a product
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, category, location, price, description } = req.body;
+  const { name, category, location, price, description, isNew } = req.body;
 
   if (!name || !category || !location || !price || !description) {
     return res.status(400).json({
@@ -31,9 +31,7 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 
   if (req.files.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "Minimum of 1 Files are required." });
+    return res.status(400).json({ message: "Minimum of 1 File is required." });
   }
 
   const files = req.files.map((file) => file.filename);
@@ -47,6 +45,7 @@ const createProduct = asyncHandler(async (req, res) => {
     description,
     files,
     userId,
+    isNew: isNew !== undefined ? isNew : true,
   });
 
   await newProduct.save();
@@ -119,6 +118,10 @@ const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const oldProduct = await Product.findById(id);
 
+  if (!oldProduct) {
+    return res.status(404).json({ error: "No such product!" });
+  }
+
   const name = req.body.name ? req.body.name : oldProduct.name;
   const category = req.body.category ? req.body.category : oldProduct.category;
   const location = req.body.location ? req.body.location : oldProduct.location;
@@ -130,6 +133,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     req.files.length > 0
       ? req.files.map((file) => file.filename)
       : oldProduct.files;
+  const isNew =
+    req.body.isNew !== undefined ? req.body.isNew : oldProduct.isNew;
 
   const userId = req.user.id;
 
@@ -141,6 +146,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     description,
     files,
     userId,
+    isNew,
   };
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -156,7 +162,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 
   if (req.files.length > 0) {
-    for (let i = 0; i < req.files.length; i++) {
+    for (let i = 0; i < oldProduct.files.length; i++) {
       unlinkfile(oldProduct.files[i]);
     }
   }
