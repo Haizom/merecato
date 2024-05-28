@@ -13,7 +13,12 @@ const adminRoutes = express.Router();
 
 adminRoutes.get("/products", adminAuth, getAllProducts);
 adminRoutes.get("/users", adminAuth, getAllUsers);
-adminRoutes.post("/category", adminAuth, upload.single('image'), createCategory);
+adminRoutes.post(
+  "/categories",
+  adminAuth,
+  upload.single("image"),
+  createCategory
+);
 adminRoutes.get("/categories", adminAuth, getAllCategories);
 adminRoutes.delete("/categories/:id", adminAuth, deleteCategory);
 
