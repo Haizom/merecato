@@ -36,6 +36,8 @@ app.use("/api/conversations", require("./routes/conversationRoues"));
 app.use("/api/messages", require("./routes/messagesRoutes"));
 app.use("/api/ratings", require("./routes/ratingRoutes"));
 app.use("/api/history", require("./routes/historyRoutes"));
+app.use("/admin", require("./admin/adminRoutes"));
+
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 

@@ -128,22 +128,11 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
-// Get all users -- for admin dashboard
-const getAllUsers = asyncHandler(async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
 
 module.exports = {
   registerUser,
   login,
   logout,
   updateUserInfo,
-  getAllUsers,
   updatePassword,
 };
