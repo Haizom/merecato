@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const User = require("../models/UserModel");
 const Category = require("../models/categoryModel");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const mongoose = require("mongoose");
 const { unlinkfile } = require("../utils/unlinkFile");
