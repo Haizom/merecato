@@ -80,17 +80,21 @@ const deleteCategory = asyncHandler(async (req, res) => {
   res.status(200).json(deletedCategory);
 });
 
-
 // Login
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const admin = email === process.env.ADMIN_EMAIL;
+  // console.log(email);
+  // console.log(password);
+
+  const admin = await Admin.findOne({ email });
+  // console.log(admin);
 
   if (!admin) {
     return res.status(401).json({ message: "admin does not exist" });
   }
+  // console.log(admin.password);
 
-  const isMatch = await bcrypt.compare(password, process.env.ADMIN_PASSWORD);
+  const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Invalid password" });
   }
