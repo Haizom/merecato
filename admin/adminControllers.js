@@ -84,13 +84,13 @@ const deleteCategory = asyncHandler(async (req, res) => {
 // Login
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const admin = await Admin.findOne({ email });
+  const admin = email === process.env.ADMIN_EMAIL;
 
   if (!admin) {
     return res.status(401).json({ message: "admin does not exist" });
   }
 
-  const isMatch = await bcrypt.compare(password, Admin.password);
+  const isMatch = await bcrypt.compare(password, process.env.ADMIN_PASSWORD);
   if (!isMatch) {
     return res.status(401).json({ message: "Invalid password" });
   }
