@@ -6,7 +6,8 @@ const {
   getAllUsers,
   createCategory,
   getAllCategories,
-  deleteCategory
+  deleteCategory,
+  adminLogin
 } = require("./adminControllers");
 
 const adminRoutes = express.Router();
@@ -21,5 +22,6 @@ adminRoutes.post(
 );
 adminRoutes.get("/categories", adminAuth, getAllCategories);
 adminRoutes.delete("/categories/:id", adminAuth, deleteCategory);
+adminRoutes.post("/login", adminLogin);
 
 module.exports = adminRoutes;

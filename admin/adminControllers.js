@@ -5,6 +5,7 @@ const Category = require("../models/categoryModel");
 
 const mongoose = require("mongoose");
 const { unlinkfile } = require("../utils/unlinkFile");
+const Admin = require("../models/AdminModel");
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
@@ -78,10 +79,32 @@ const deleteCategory = asyncHandler(async (req, res) => {
 });
 
 
+// Login
+const adminLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const admin = await Admin.findOne({ email });
+
+  if (!admin) {
+    return res.status(401).json({ message: "admin does not exist" });
+  }
+
+  const isMatch = await bcrypt.compare(password, Admin.password);
+  if (!isMatch) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  const payload = { id: admin.id };
+  const options = { expiresIn: "1y" };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, options);
+
+  res.status(200).json({ token, admin: admin });
+});
+
 module.exports = {
   getAllProducts,
   getAllUsers,
   createCategory,
   getAllCategories,
   deleteCategory,
+  adminLogin,
 };
