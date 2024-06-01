@@ -8,7 +8,9 @@ const {
   logout,
   updateUserInfo,
   // getAllUsers,
-  updatePassword
+  updatePassword,
+  verifyEmailToken,
+  resetPassword,
 } = require("../controllers/userController");
 
 const { userAuth } = require("../middleware/userAuth");
@@ -19,6 +21,9 @@ router.post("/register", registerUser);
 router.post("/logout", userAuth, logout);
 router.post("/logout", userAuth, logout);
 router.put("/password", userAuth, updatePassword);
+
+router.post("/request-password-change", userAuth, verifyEmailToken);
+router.put("/reset-password/:token",userAuth, resetPassword);
 
 router.patch(
   "/update-user-info",

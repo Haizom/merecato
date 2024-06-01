@@ -1,7 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
+const PasswordResetToken = require("../models/PasswordResetTokenModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 // Login
 const login = asyncHandler(async (req, res) => {
@@ -128,6 +131,92 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+// verify password
+const verifyEmailToken = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    let passwordResetToken = await PasswordResetToken.findOne({ userId });
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const expires = Date.now() + 3600000; // 1 hour
+
+    if (passwordResetToken) {
+      // Update the existing token
+      passwordResetToken.token = resetToken;
+      passwordResetToken.expires = expires;
+      await passwordResetToken.save();
+    } else {
+      // Create a new token
+      passwordResetToken = new PasswordResetToken({
+        userId: user._id,
+        token: resetToken,
+        expires,
+      });
+      await passwordResetToken.save();
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+
+    const resetUrl = `http://${req.headers.host}/reset-password/${resetToken}`;
+    const mailOptions = {
+      to: user.email,
+      from: process.env.EMAIL,
+      subject: "Merecato Password Reset Request",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+              Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n
+              ${resetUrl}\n\n
+              If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: "Password reset email sent" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// reset password
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const passwordResetToken = await PasswordResetToken.findOne({
+      token,
+      expires: { $gt: Date.now() },
+    });
+
+    if (!passwordResetToken)
+      return res
+        .status(400)
+        .json({ message: "Password reset token is invalid or has expired" });
+
+    const user = await User.findById(passwordResetToken.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    // Remove the token after successful password reset
+    await PasswordResetToken.deleteOne({ _id: passwordResetToken._id });
+
+    res.json({ message: "Password has been reset" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = {
   registerUser,
@@ -135,4 +224,6 @@ module.exports = {
   logout,
   updateUserInfo,
   updatePassword,
+  verifyEmailToken,
+  resetPassword,
 };
