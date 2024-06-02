@@ -136,10 +136,12 @@ const verifyEmailToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findById(email);
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    let passwordResetToken = await PasswordResetToken.findOne({ userId: user.id });
+    let passwordResetToken = await PasswordResetToken.findOne({
+      userId: user.id,
+    });
 
     const resetToken = crypto.randomBytes(20).toString("hex");
     const expires = Date.now() + 3600000; // 1 hour
