@@ -22,8 +22,8 @@ router.post("/logout", userAuth, logout);
 router.post("/logout", userAuth, logout);
 router.put("/password", userAuth, updatePassword);
 
-router.post("/request-password-change", userAuth, verifyEmailToken);
-router.put("/reset-password/:token",userAuth, resetPassword);
+router.post("/request-password-change", verifyEmailToken);
+router.put("/reset-password/:token", resetPassword);
 
 router.patch(
   "/update-user-info",

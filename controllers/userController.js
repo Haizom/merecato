@@ -133,13 +133,13 @@ const updatePassword = asyncHandler(async (req, res) => {
 
 // verify password
 const verifyEmailToken = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const { email } = req.body;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(email);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    let passwordResetToken = await PasswordResetToken.findOne({ userId });
+    let passwordResetToken = await PasswordResetToken.findOne({ userId: user.id });
 
     const resetToken = crypto.randomBytes(20).toString("hex");
     const expires = Date.now() + 3600000; // 1 hour
@@ -152,7 +152,7 @@ const verifyEmailToken = asyncHandler(async (req, res) => {
     } else {
       // Create a new token
       passwordResetToken = new PasswordResetToken({
-        userId: user._id,
+        userId: user.id,
         token: resetToken,
         expires,
       });
